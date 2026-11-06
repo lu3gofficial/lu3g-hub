@@ -1,0 +1,58 @@
+/* Pagina Plugin → Plugin LU3G: schede in griglia, una per plugin. */
+.lu3g-hub__intro { max-width: 900px; color: #50575e; }
+.lu3g-hub__checked { margin-left: 6px; color: #8c8f94; }
+
+.lu3g-hub__grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+	gap: 16px;
+	margin-top: 16px;
+}
+
+.lu3g-hub__card {
+	display: flex;
+	flex-direction: column;
+	padding: 18px 20px;
+	border: 1px solid #dcdcde;
+	border-left: 4px solid #c3c4c7;
+	border-radius: 6px;
+	background: #fff;
+}
+.lu3g-hub__card.is-active { border-left-color: #00a32a; }
+.lu3g-hub__card.is-inactive { border-left-color: #dba617; }
+.lu3g-hub__card.is-busy { opacity: .7; }
+
+.lu3g-hub__head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.lu3g-hub__name { margin: 0; margin-right: auto; font-size: 15px; line-height: 1.4; }
+
+.lu3g-hub__badge {
+	padding: 2px 8px;
+	border-radius: 999px;
+	background: #f0f0f1;
+	color: #50575e;
+	font-size: 11px;
+	font-weight: 600;
+	line-height: 18px;
+	white-space: nowrap;
+}
+.is-active .lu3g-hub__badge--state { background: #edfaef; color: #00701a; }
+.is-inactive .lu3g-hub__badge--state { background: #fcf9e8; color: #8a6d00; }
+.lu3g-hub__badge--new { background: #2271b1; color: #fff; }
+
+.lu3g-hub__desc { margin: 10px 0 0; color: #3c434a; }
+.lu3g-hub__meta { margin: 10px 0 0; color: #646970; font-size: 12px; }
+.lu3g-hub__meta li { margin: 2px 0; }
+.lu3g-hub__update { color: #b32d2e; font-weight: 600; }
+
+.lu3g-hub__actions {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+	margin-top: auto;
+	padding-top: 14px;
+}
+.lu3g-hub__link { font-size: 12px; }
+.lu3g-hub__msg { min-height: 1em; margin: 8px 0 0; font-size: 12px; }
+.lu3g-hub__msg.is-error { color: #b32d2e; }
+.lu3g-hub__msg.is-ok { color: #00701a; }
