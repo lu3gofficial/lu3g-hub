@@ -1,5 +1,12 @@
 # Registro delle modifiche
 
+## 1.1.0
+- Voce propria **LU3G** nel menu della bacheca, subito sotto la Bacheca, con il logo LU3G come icona (prende i colori dello schema della bacheca). Il vecchio indirizzo Plugin → Plugin LU3G porta qui.
+- Nuova interfaccia: intestazione scura col logo LU3G e contatori (disponibili, attivi, da aggiornare, aggiornamenti automatici), filtri (Tutti, Attivi, Disattivati, Da installare, Da aggiornare), ricerca, schede con segno colorato, interruttore *Attivo*, pulsanti Installa/Aggiorna, avvisi a comparsa, pulsante **Aggiorna tutti** (uno alla volta, con l'avanzamento sulla scheda).
+- Animazioni: ingresso dell'intestazione e delle schede una dopo l'altra, bagliore che ruota, interruttori che scorrono, barra di avanzamento, contatori che contano, scossa in caso di errore. Ferme con "riduci animazioni".
+- **Aggiornamenti automatici**: interruttore su ogni scheda, *Tutti i plugin installati*, *Anche su quelli che installi da qui* e *LU3G Hub*. Sono quelli di WordPress (stessa impostazione dei link della pagina Plugin): WordPress aggiorna da solo due volte al giorno e manda l'email di riepilogo.
+- Gli aggiornamenti funzionano anche per le copie dei plugin LU3G il cui sistema di aggiornamento non risponde più (es. Login Brand 1.6.0): la versione nuova arriva dal catalogo di LU3G Hub. Nella pagina Plugin compare il link degli aggiornamenti automatici anche per i plugin LU3G già aggiornati.
+
 ## 1.0.0
 - Prima versione. Pagina *Plugin → Plugin LU3G* con tutti i plugin LU3G presi da GitHub (repository pubblici di lu3gofficial con la proprietà `Plugin_Wordpress = yes` e uno zip nell'ultima release): installa, attiva, disattiva e aggiorna, senza ricaricare la pagina.
 - I plugin nuovi compaiono da soli (controllo ogni 12 ore e una volta al giorno dal cron, o con *Aggiorna l'elenco*), con l'etichetta *Nuovo* e un avviso in Bacheca e nella pagina Plugin.

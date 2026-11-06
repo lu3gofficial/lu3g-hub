@@ -1,7 +1,8 @@
 # LU3G Hub
 
-Raccoglitore dei plugin WordPress di LU3G Agenzia Web: da un'unica pagina (**Plugin → Plugin LU3G**) si installano,
-attivano, disattivano e aggiornano tutti i plugin LU3G pubblicati su GitHub. I plugin nuovi compaiono da soli.
+Raccoglitore dei plugin WordPress di LU3G Agenzia Web: da un'unica pagina (voce **LU3G** nel menu della bacheca) si
+installano, attivano, disattivano e aggiornano tutti i plugin LU3G pubblicati su GitHub, anche in automatico.
+I plugin nuovi compaiono da soli.
 
 Requisiti: PHP 7.4+, WordPress 6.0+.
 
@@ -25,6 +26,13 @@ in Bacheca. Non viene installato da solo: lo si installa dalla pagina quando ser
 - Permessi: installare e aggiornare richiedono i permessi di WordPress per farlo (su un multisite solo il super
   amministratore); attivare e disattivare `activate_plugins`.
 
+## Aggiornamenti automatici
+Interruttore su ogni scheda, più *Tutti i plugin installati*, *Anche su quelli che installi da qui* e *LU3G Hub*.
+Usano gli aggiornamenti automatici di WordPress (opzione `auto_update_plugins`, la stessa della pagina Plugin): li esegue il
+cron di WordPress due volte al giorno. LU3G Hub aggiunge la versione nuova all'elenco degli aggiornamenti quando il sistema
+del plugin non lo fa (copie vecchie). Su un multisite valgono per tutta la rete e li gestisce il super amministratore.
+Se un sito li ha spenti (`AUTOMATIC_UPDATER_DISABLED` o filtri), la pagina lo dice.
+
 ## Limiti di GitHub
 Senza token GitHub concede 60 richieste l'ora per indirizzo IP. Un controllo dell'elenco ne usa una per l'elenco dei
 repository e una per ogni plugin (la proprietà `Plugin_Wordpress` si rilegge una volta a settimana); nome e descrizione
@@ -34,9 +42,10 @@ Facoltativo, in `wp-config.php`: `define( 'LU3G_GITHUB_TOKEN', 'github_pat_...' 
 ## Struttura
 - `lu3g-hub.php` – intestazione, avvio, cron giornaliero.
 - `includes/class-catalog.php` – lettura del catalogo da GitHub, cache, riconoscimento dei plugin installati, "Nuovo".
-- `includes/class-admin.php` – pagina, azioni (admin-ajax), avviso dei plugin nuovi.
+- `includes/class-admin.php` – voce di menu, pagina, azioni (admin-ajax), avviso dei plugin nuovi.
+- `includes/class-updates.php` – aggiornamenti automatici.
 - `includes/class-updater.php` – aggiornamenti di LU3G Hub stesso dalle release.
-- `assets/` – CSS e JS della pagina.
+- `assets/` – CSS e JS della pagina, logo e icona LU3G, font Manrope (licenza SIL OFL).
 
 ## Pubblicare una nuova versione
 1. Aumenta la versione in `lu3g-hub.php` (`Version:` e `LU3G_HUB_VERSION`) e `Stable tag` in `readme.txt`.
