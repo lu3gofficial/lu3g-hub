@@ -3,7 +3,7 @@
  * Plugin Name:       LU3G Hub
  * Plugin URI:        https://github.com/lu3gofficial/lu3g-hub
  * Description:       Raccoglie tutti i plugin LU3G: li installa dalle release GitHub, li attiva, li disattiva e li aggiorna da un'unica pagina. I plugin nuovi compaiono da soli.
- * Version:           1.1.0
+ * Version:           1.1.1
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            LU3G Agenzia Web
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'LU3G_HUB_VERSION', '1.1.0' );
+define( 'LU3G_HUB_VERSION', '1.1.1' );
 define( 'LU3G_HUB_FILE', __FILE__ );
 define( 'LU3G_HUB_URL', plugin_dir_url( __FILE__ ) );
 
