@@ -1,5 +1,10 @@
 # Registro delle modifiche
 
+## 1.2.0
+- **Multisite**: voce **LU3G** anche in Network Admin (dove su un Multisite si installano e si gestiscono i plugin), con permesso `manage_network_plugins`. Lì si installa, si aggiorna e l'interruttore è **"Attivo in tutta la rete"** (attivazione di rete). Prima la voce c'era solo nella bacheca dei singoli siti, quindi installando LU3G Hub in rete non si vedeva.
+- Nei singoli siti la voce resta per attivare un plugin solo su quel sito; un plugin attivo in rete compare attivo e bloccato ("si disattiva da Rete → Plugin"). WordPress mostra la voce agli amministratori dei siti solo se la rete permette loro di gestire i plugin (Rete → Impostazioni → Menu di amministrazione → Plugin); il super amministratore la vede sempre.
+- Avviso dei plugin nuovi anche nella Bacheca e nella pagina Plugin di rete.
+
 ## 1.1.1
 - `includes/class-updater.php` ora è generato dal modello comune di [lu3g-updater](https://github.com/lu3gofficial/lu3g-updater) (1.0.0), a partire dal nuovo file `.lu3g-updater`. Il codice dell'updater è lo stesso di prima: cambia solo il commento in cima.
 - Release avviabile anche da GitHub, senza computer: *Actions → Release → Run workflow* sul branch `main`. Il tag lo crea l'automazione dalla `Version` del plugin, e si ferma se quella versione è già pubblicata.

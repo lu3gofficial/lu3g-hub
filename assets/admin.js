@@ -35,6 +35,7 @@
 		var body = new FormData();
 		body.append( 'action', 'lu3g_hub' );
 		body.append( 'nonce', cfg.nonce );
+		body.append( 'network', cfg.network ? '1' : '' );
 		Object.keys( data ).forEach( function ( key ) {
 			body.append( key, data[ key ] );
 		} );

@@ -19,15 +19,37 @@ final class LU3G_Hub_Admin {
 
 	const PAGE = 'lu3g-hub';
 
+	/** true nel pannello di rete (Network Admin) e nelle sue chiamate AJAX. */
+	private static $net = false;
+
+	/**
+	 * Multisite (1.2.0): i plugin si installano e si gestiscono dalla rete, quindi c'è una voce "LU3G" anche in
+	 * Network Admin (permesso manage_network_plugins). Lì "Attivo" vuol dire attivo su tutta la rete; nei singoli siti
+	 * vuol dire attivo su quel sito (WordPress mostra la voce agli amministratori dei siti solo se la rete permette loro
+	 * di gestire i plugin: Rete → Impostazioni → Menu di amministrazione → Plugin).
+	 */
+	public static function net() {
+		return self::$net;
+	}
+
 	public static function init() {
 		add_action( 'admin_menu', array( __CLASS__, 'menu' ) );
+		add_action( 'network_admin_menu', array( __CLASS__, 'menu_network' ) );
+		add_filter( 'network_admin_plugin_action_links_' . plugin_basename( LU3G_HUB_FILE ), array( __CLASS__, 'action_links' ) );
 		add_action( 'wp_ajax_lu3g_hub', array( __CLASS__, 'ajax' ) );
 		add_action( 'admin_notices', array( __CLASS__, 'notice_new' ) );
 		add_filter( 'plugin_action_links_' . plugin_basename( LU3G_HUB_FILE ), array( __CLASS__, 'action_links' ) );
 	}
 
 	public static function page_url( $args = array() ) {
-		return add_query_arg( array_merge( array( 'page' => self::PAGE ), $args ), admin_url( 'admin.php' ) );
+		$base = ( self::$net || is_network_admin() ) ? network_admin_url( 'admin.php' ) : admin_url( 'admin.php' );
+		return add_query_arg( array_merge( array( 'page' => self::PAGE ), $args ), $base );
+	}
+
+	public static function menu_network() {
+		$svg  = (string) file_get_contents( dirname( LU3G_HUB_FILE ) . '/assets/lu3g-icon.svg' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+		$hook = add_menu_page( 'Plugin LU3G', 'LU3G', 'manage_network_plugins', self::PAGE, array( __CLASS__, 'render_page' ), 'data:image/svg+xml;base64,' . base64_encode( $svg ), 3 ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
+		add_action( 'load-' . $hook, array( __CLASS__, 'load_page' ) );
 	}
 
 	/**
@@ -78,6 +100,7 @@ final class LU3G_Hub_Admin {
 			array(
 				'ajax'    => admin_url( 'admin-ajax.php' ),
 				'nonce'   => wp_create_nonce( 'lu3g_hub' ),
+				'network' => is_network_admin() ? 1 : 0,
 				'busy'    => array(
 					'install'    => 'Installazione…',
 					'update'     => 'Aggiornamento…',
@@ -105,8 +128,14 @@ final class LU3G_Hub_Admin {
 		if ( $installed ) {
 			$plugins = get_plugins();
 			$current = isset( $plugins[ $file ]['Version'] ) ? $plugins[ $file ]['Version'] : '';
-			$active  = is_plugin_active( $file );
-			$network = is_multisite() && is_plugin_active_for_network( $file );
+			if ( self::$net ) {
+				// Pannello di rete: "attivo" = attivo su tutta la rete, e si può cambiare da qui.
+				$active  = is_plugin_active_for_network( $file );
+				$network = false;
+			} else {
+				$active  = is_plugin_active( $file );
+				$network = is_multisite() && is_plugin_active_for_network( $file );
+			}
 		}
 		return array(
 			'file'      => $file,
@@ -139,6 +168,7 @@ final class LU3G_Hub_Admin {
 	/* ------------------------------------------------------------------ pagina */
 
 	public static function render_page() {
+		self::$net = is_network_admin();
 		if ( ! current_user_can( 'activate_plugins' ) ) {
 			return;
 		}
@@ -294,7 +324,7 @@ final class LU3G_Hub_Admin {
 		}
 		$hue = abs( crc32( $item['repo'] ) ) % 360; // colore del segno, sempre lo stesso per lo stesso plugin
 
-		$can_toggle = $st['installed'] && ( $st['active'] ? current_user_can( 'deactivate_plugin', $st['file'] ) : current_user_can( 'activate_plugin', $st['file'] ) );
+		$can_toggle = $st['installed'] && ( self::$net ? current_user_can( 'manage_network_plugins' ) : ( $st['active'] ? current_user_can( 'deactivate_plugin', $st['file'] ) : current_user_can( 'activate_plugin', $st['file'] ) ) );
 		$hint       = $st['network'] ? 'Attivo su tutta la rete: si disattiva da Rete → Plugin' : '';
 
 		ob_start();
@@ -354,7 +384,7 @@ final class LU3G_Hub_Admin {
 					<?php endif; ?>
 				<?php else : ?>
 					<div class="lu3g-hub__switches">
-						<?php echo self::switch_html( $st['active'] ? 'deactivate' : 'activate', 'Attivo', $st['active'], ! $can_toggle || $st['network'], $hint ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+						<?php echo self::switch_html( $st['active'] ? 'deactivate' : 'activate', self::$net ? 'Attivo in tutta la rete' : 'Attivo', $st['active'], ! $can_toggle || $st['network'], $hint ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 						<?php if ( LU3G_Hub_Updates::can_manage() ) : ?>
 							<?php echo self::switch_html( $st['auto'] ? 'auto_off' : 'auto_on', 'Aggiornamento automatico', $st['auto'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 						<?php endif; ?>
@@ -377,6 +407,8 @@ final class LU3G_Hub_Admin {
 	public static function ajax() {
 		check_ajax_referer( 'lu3g_hub', 'nonce' );
 		require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		// Chiamata dal pannello di rete: attivazioni su tutta la rete (solo per chi gestisce i plugin della rete).
+		self::$net = is_multisite() && ! empty( $_POST['network'] ) && current_user_can( 'manage_network_plugins' );
 
 		$op    = isset( $_POST['op'] ) ? sanitize_key( wp_unslash( $_POST['op'] ) ) : '';
 		$repo  = isset( $_POST['repo'] ) ? sanitize_text_field( wp_unslash( $_POST['repo'] ) ) : '';
@@ -465,7 +497,7 @@ final class LU3G_Hub_Admin {
 				if ( $missing ) {
 					wp_send_json_error( array( 'message' => 'Per attivare ' . $name . ' prima installa e attiva ' . implode( ', ', $missing ) . '.' ) );
 				}
-				$result = activate_plugin( $file );
+				$result = activate_plugin( $file, '', self::$net );
 				$done   = $name . ' attivato.';
 				break;
 
@@ -476,7 +508,7 @@ final class LU3G_Hub_Admin {
 				if ( ! current_user_can( 'deactivate_plugin', $file ) ) {
 					self::deny();
 				}
-				deactivate_plugins( $file );
+				deactivate_plugins( $file, false, self::$net );
 				$result = true;
 				$done   = $name . ' disattivato.';
 				break;
@@ -600,7 +632,7 @@ final class LU3G_Hub_Admin {
 	 */
 	public static function notice_new() {
 		$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
-		if ( ! $screen || ! in_array( $screen->id, array( 'dashboard', 'plugins' ), true ) || ! current_user_can( 'activate_plugins' ) ) {
+		if ( ! $screen || ! in_array( $screen->id, array( 'dashboard', 'plugins', 'dashboard-network', 'plugins-network' ), true ) || ! current_user_can( is_network_admin() ? 'manage_network_plugins' : 'activate_plugins' ) ) {
 			return;
 		}
 		$data   = LU3G_Hub_Catalog::stored();
