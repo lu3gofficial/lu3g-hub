@@ -1,5 +1,14 @@
 # Registro delle modifiche
 
+## 1.4.0
+- **Pagina Plugin senza i plugin LU3G.** Si gestiscono da LU3G Hub, quindi nella pagina Plugin (anche quella di rete)
+  resta solo LU3G Hub, con un avviso: quanti plugin LU3G sono nascosti, "Apri LU3G Hub" e "Mostrali anche qui"
+  (per esempio per eliminarne uno; da lì "Nascondili" li toglie di nuovo). Contano come plugin LU3G quelli del
+  catalogo e quelli con Update URI `github.com/lu3gofficial/…`. Aggiornamenti, aggiornamenti automatici e attivazioni
+  funzionano come prima; disattivando LU3G Hub ricompaiono. Si spegne col filtro `lu3g_hub_hide_plugins`.
+- **Link Impostazioni sulle schede**: il link che ogni plugin metteva nella pagina Plugin (es. "Impostazioni") ora è
+  anche sulla sua scheda in LU3G Hub, come pulsante nero accanto a Novità e GitHub.
+
 ## 1.3.0
 - **Catalogo fuori dal limite di GitHub.** Senza token GitHub concede 60 richieste API l'ora per server, e ogni
   "Aggiorna l'elenco" ne usava una per plugin (circa 16): dopo 3-4 clic il sito veniva bloccato per un'ora e LU3G Hub

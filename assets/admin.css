@@ -438,3 +438,7 @@
 	.lu3g-hub__stats dd.is-bump { animation: lu3g-hub-bump .5s var(--ease); }
 	@keyframes lu3g-hub-bump { 40% { transform: translateY(-5px); } }
 }
+
+/* 1.4.0: link Impostazioni del plugin sulla scheda */
+.lu3g-hub__chip--settings { border-color: var(--ink); background: var(--ink); color: #fff; }
+.lu3g-hub__chip--settings:hover, .lu3g-hub__chip--settings:focus { background: #27272a; color: #fff; }

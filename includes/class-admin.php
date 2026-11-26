@@ -372,6 +372,9 @@ final class LU3G_Hub_Admin {
 				<?php if ( '' !== $item['requires'] ) : ?>
 					<span class="lu3g-hub__chip">Richiede <?php echo esc_html( ucfirst( $item['requires'] ) ); ?></span>
 				<?php endif; ?>
+				<?php foreach ( LU3G_Hub_Plugins_Screen::settings_links( $st['file'] ) as $link ) : // link "Impostazioni" del plugin (non è più nella pagina Plugin) ?>
+					<a class="lu3g-hub__chip lu3g-hub__chip--link lu3g-hub__chip--settings" href="<?php echo esc_url( $link['href'] ); ?>"><?php echo esc_html( $link['text'] ); ?></a>
+				<?php endforeach; ?>
 				<a class="lu3g-hub__chip lu3g-hub__chip--link" href="<?php echo esc_url( '' !== $item['release_url'] ? $item['release_url'] : $item['url'] ); ?>" target="_blank" rel="noopener">Novità ↗</a>
 				<a class="lu3g-hub__chip lu3g-hub__chip--link" href="<?php echo esc_url( $item['url'] ); ?>" target="_blank" rel="noopener">GitHub ↗</a>
 			</div>
