@@ -1,5 +1,12 @@
 # Registro delle modifiche
 
+## 1.4.1
+- **LU3G Hub resta attivo dopo il proprio aggiornamento.** WordPress, aggiornando dalla bacheca, disattiva il plugin e
+  lo riattiva con un passaggio finale nel browser; se quel passaggio salta (pagina chiusa, cornice bloccata dal server,
+  aggiornamento lanciato da un altro strumento) o se la cartella del plugin cambia nome, LU3G Hub restava disattivato.
+  Ora a fine aggiornamento, se era attivo, si rimette da solo tra i plugin attivi (anche attivo in rete), cercando la
+  cartella nuova per Update URI. Non ricarica il plugin: nessun rischio di errori per classi doppie.
+
 ## 1.4.0
 - **Pagina Plugin senza i plugin LU3G.** Si gestiscono da LU3G Hub, quindi nella pagina Plugin (anche quella di rete)
   resta solo LU3G Hub, con un avviso: quanti plugin LU3G sono nascosti, "Apri LU3G Hub" e "Mostrali anche qui"
