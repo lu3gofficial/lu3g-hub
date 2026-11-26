@@ -1,5 +1,17 @@
 # Registro delle modifiche
 
+## 1.3.0
+- **Catalogo fuori dal limite di GitHub.** Senza token GitHub concede 60 richieste API l'ora per server, e ogni
+  "Aggiorna l'elenco" ne usava una per plugin (circa 16): dopo 3-4 clic il sito veniva bloccato per un'ora e LU3G Hub
+  continuava a mostrare le versioni vecchie (successo con LU3G Manutenzione, ferma alla 1.0.1 con la 1.0.2 pubblicata).
+  Ora l'ultima versione di ogni plugin si legge dalle pagine pubbliche di GitHub (rinvio di `/releases/latest` al tag
+  e link diretto dello zip), che non contano nel limite: un controllo usa **1** richiesta API (l'elenco dei
+  repository) più, una volta a settimana, la lettura delle proprietà e, una volta sola, il nome dello zip di un plugin
+  nuovo se è diverso dal nome del repository.
+- Se GitHub blocca comunque l'API, le versioni dei plugin già elencati si aggiornano lo stesso; l'avviso dice fino a
+  che ora vale il blocco (solo i plugin nuovi aspettano).
+- "Aggiorna l'elenco" premuto di nuovo entro 30 secondi non ricontrolla e lo dice.
+
 ## 1.2.0
 - **Multisite**: voce **LU3G** anche in Network Admin (dove su un Multisite si installano e si gestiscono i plugin), con permesso `manage_network_plugins`. Lì si installa, si aggiorna e l'interruttore è **"Attivo in tutta la rete"** (attivazione di rete). Prima la voce c'era solo nella bacheca dei singoli siti, quindi installando LU3G Hub in rete non si vedeva.
 - Nei singoli siti la voce resta per attivare un plugin solo su quel sito; un plugin attivo in rete compare attivo e bloccato ("si disattiva da Rete → Plugin"). WordPress mostra la voce agli amministratori dei siti solo se la rete permette loro di gestire i plugin (Rete → Impostazioni → Menu di amministrazione → Plugin); il super amministratore la vede sempre.

@@ -78,8 +78,12 @@ final class LU3G_Hub_Admin {
 	/** Prima di disegnare la pagina: "Aggiorna l'elenco" e file CSS/JS. */
 	public static function load_page() {
 		if ( isset( $_GET['lu3g_hub_refresh'] ) && check_admin_referer( 'lu3g_hub_refresh' ) ) {
-			LU3G_Hub_Catalog::refresh();
-			wp_safe_redirect( self::page_url( array( 'lu3g_hub_done' => 1 ) ) );
+			// Freno: premuto di nuovo entro 30 secondi non ricontrolla (i clic ripetuti non servono e pesano su GitHub).
+			$recent = time() - (int) LU3G_Hub_Catalog::stored()['time'] < 30;
+			if ( ! $recent ) {
+				LU3G_Hub_Catalog::refresh();
+			}
+			wp_safe_redirect( self::page_url( array( 'lu3g_hub_done' => $recent ? 'recent' : 1 ) ) );
 			exit;
 		}
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'assets' ) );
@@ -217,7 +221,7 @@ final class LU3G_Hub_Admin {
 				<div class="notice notice-warning inline"><p><?php echo esc_html( $data['error'] ); ?> <?php echo $items ? 'Sotto c\'è l\'ultimo elenco letto.' : ''; ?></p></div>
 			<?php endif; ?>
 			<?php if ( ! empty( $_GET['lu3g_hub_done'] ) && '' === $data['error'] ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- solo un messaggio ?>
-				<div class="notice notice-success inline is-dismissible"><p>Elenco aggiornato da GitHub.</p></div>
+				<div class="notice notice-success inline is-dismissible"><p><?php echo 'recent' === $_GET['lu3g_hub_done'] ? 'L\'elenco è stato appena controllato su GitHub: è già aggiornato.' : 'Elenco aggiornato da GitHub.'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?></p></div>
 			<?php endif; ?>
 
 			<?php if ( ! $items ) : ?>
